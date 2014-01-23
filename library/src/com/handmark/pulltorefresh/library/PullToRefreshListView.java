@@ -25,9 +25,12 @@ import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 import com.handmark.pulltorefresh.library.internal.LoadingLayout;
@@ -40,23 +43,61 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 	private FrameLayout mLvFooterLoadingFrame;
 
 	private boolean mListViewExtrasEnabled;
+	
+	private ListView lv;
 
 	public PullToRefreshListView(Context context) {
 		super(context);
+		
 	}
 
 	public PullToRefreshListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
+		
 	}
 
 	public PullToRefreshListView(Context context, Mode mode) {
 		super(context, mode);
+		
 	}
 
 	public PullToRefreshListView(Context context, Mode mode, AnimationStyle style) {
 		super(context, mode, style);
+		
 	}
 
+	public void setAutoLoad(final int x)
+	{
+		lv = getRefreshableView();
+		
+		lv.setOnScrollListener(new OnScrollListener() {
+			
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				if(lv.getLastVisiblePosition() == (lv.getCount()-1)-x)
+				{
+					Toast.makeText(PullToRefreshListView.this.getContext(), "Its the end", Toast.LENGTH_LONG).show();
+					onPullUpToRefresh();
+					
+				}
+				
+			}
+		});
+		
+		
+	}
+	public void removeAutoLoad()
+	{
+		lv.setOnClickListener(null);
+	}
+	
 	@Override
 	public final Orientation getPullToRefreshScrollDirection() {
 		return Orientation.VERTICAL;
@@ -125,6 +166,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 			smoothScrollTo(0);
 		}
 	}
+	
 
 	@Override
 	protected void onReset() {

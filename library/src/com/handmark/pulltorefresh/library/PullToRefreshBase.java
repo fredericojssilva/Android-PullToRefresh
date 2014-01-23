@@ -359,6 +359,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 						return true;
 					}
 
+					
+					
 					// If we haven't returned by here, then we're not in a state
 					// to pull, so just reset
 					setState(State.RESET);
@@ -445,6 +447,8 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 		mOnRefreshListener = null;
 	}
 
+	
+	
 	/**
 	 * @deprecated You should now call this method on the result of
 	 *             {@link #getLoadingLayoutProxy()}.
@@ -1069,7 +1073,14 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
 			}
 		}
 	}
-
+/*
+ * FRED
+ */
+	public void onPullUpToRefresh()
+	{
+		mOnRefreshListener2.onPullUpToRefresh(this);
+	}
+	
 	@SuppressWarnings("deprecation")
 	private void init(Context context, AttributeSet attrs) {
 		switch (getPullToRefreshScrollDirection()) {
