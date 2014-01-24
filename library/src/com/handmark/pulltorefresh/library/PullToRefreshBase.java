@@ -1078,6 +1078,7 @@ public abstract class PullToRefreshBase<T extends View> extends LinearLayout imp
  */
 	public void onPullUpToRefresh()
 	{
+		if(mOnRefreshListener2!=null)
 		mOnRefreshListener2.onPullUpToRefresh(this);
 	}
 	

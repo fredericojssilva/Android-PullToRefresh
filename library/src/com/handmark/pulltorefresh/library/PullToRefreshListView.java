@@ -15,6 +15,7 @@
  *******************************************************************************/
 package com.handmark.pulltorefresh.library;
 
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -22,7 +23,9 @@ import android.graphics.Canvas;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AbsListView;
@@ -30,6 +33,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
@@ -44,31 +48,48 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 
 	private boolean mListViewExtrasEnabled;
 	
+	private boolean isAutoLoading = false;
+	
 	private ListView lv;
+	private RelativeLayout footer_loading;
+	private LayoutInflater mInflater;
 
 	public PullToRefreshListView(Context context) {
 		super(context);
+		init();
 		
 	}
 
 	public PullToRefreshListView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		
+		init();
 	}
 
 	public PullToRefreshListView(Context context, Mode mode) {
 		super(context, mode);
-		
+		init();
 	}
 
 	public PullToRefreshListView(Context context, Mode mode, AnimationStyle style) {
 		super(context, mode, style);
-		
+		init();
 	}
 
-	public void setAutoLoad(final int x)
+	private void init()
 	{
 		lv = getRefreshableView();
+		mInflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		footer_loading = (RelativeLayout) mInflater.inflate(R.layout.footer_loading, lv, false);
+		//footer_loading = (RelativeLayout) findViewById(R.layout.footer_loading);
+		//lv.addFooterView(footer_loading);
+		//footer_loading.getLayoutParams().height=0;
+	}
+	public void setAutoLoad(final int x)
+	{
+		
+		
+		
+	
 		
 		lv.setOnScrollListener(new OnScrollListener() {
 			
@@ -81,10 +102,16 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-				if(lv.getLastVisiblePosition() == (lv.getCount()-1)-x)
+				if(!isAutoLoading && lv.getCount() !=0 && lv.getLastVisiblePosition() >= (lv.getCount()-1)-x)
 				{
-					Toast.makeText(PullToRefreshListView.this.getContext(), "Its the end", Toast.LENGTH_LONG).show();
+					//Toast.makeText(PullToRefreshListView.this.getContext(), "Its the end", Toast.LENGTH_LONG).show();
+					isAutoLoading=true;
 					onPullUpToRefresh();
+					
+					lv.addFooterView(footer_loading);
+					Log.d("FRED","addLoadign");
+					
+					
 					
 				}
 				
@@ -95,7 +122,16 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 	}
 	public void removeAutoLoad()
 	{
-		lv.setOnClickListener(null);
+		lv.setOnScrollListener(null);
+	}
+	public void onAutoLoadingComplete()
+	{
+		
+		isAutoLoading = false;
+		//Log.d("FRED","COMPLETE: "+lv.removeFooterView(footer_loading));
+		
+		lv.removeFooterView(footer_loading);
+		Log.d("FRED","remove loading");
 	}
 	
 	@Override
