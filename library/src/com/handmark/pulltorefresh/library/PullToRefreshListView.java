@@ -34,7 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+
 
 import com.handmark.pulltorefresh.library.internal.EmptyViewMethodAccessor;
 import com.handmark.pulltorefresh.library.internal.LoadingLayout;
@@ -53,6 +53,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 	private ListView lv;
 	private RelativeLayout footer_loading;
 	private LayoutInflater mInflater;
+	private OnScrollListener mOnScrollListener;
 
 	public PullToRefreshListView(Context context) {
 		super(context);
@@ -86,12 +87,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 	}
 	public void setAutoLoad(final int x)
 	{
-		
-		
-		
-	
-		
-		lv.setOnScrollListener(new OnScrollListener() {
+		mOnScrollListener = new OnScrollListener() {
 			
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -116,13 +112,23 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 				}
 				
 			}
-		});
+		};
+		
+		lv.setOnScrollListener(mOnScrollListener);
 		
 		
 	}
 	public void removeAutoLoad()
 	{
+		mOnScrollListener = null;
 		lv.setOnScrollListener(null);
+	}
+	public boolean isAutoLoadingActive()
+	{
+		if(mOnScrollListener == null)
+			return false;
+		else
+			return true;
 	}
 	public void onAutoLoadingComplete()
 	{
