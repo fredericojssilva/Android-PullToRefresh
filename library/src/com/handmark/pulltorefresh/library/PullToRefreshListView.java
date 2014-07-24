@@ -114,6 +114,7 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 			}
 		};
 		
+		if(lv!=null)
 		lv.setOnScrollListener(mOnScrollListener);
 		
 		
@@ -139,6 +140,11 @@ public class PullToRefreshListView extends PullToRefreshAdapterViewBase<ListView
 		lv.removeFooterView(footer_loading);
 		Log.d("FRED","remove loading");
 	}
+	
+//	public void setHeaderBackgroundColor(int color)
+//	{
+//		mHeaderLoadingView.setBackgroundColor(color);
+//	}
 	
 	@Override
 	public final Orientation getPullToRefreshScrollDirection() {
